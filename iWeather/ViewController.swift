@@ -15,8 +15,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var weatherDesc: UILabel!
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -56,6 +56,7 @@ extension ViewController: CLLocationManagerDelegate {
         var locationName: String?;
         var locationTime: String?;
         var locationTemperature: Double?;
+        
 
         let weatherURL:String = "http://api.weatherstack.com/current?access_key=ad339cb1ba4d25dc5e77e66604c11821&query=\(cityString.replacingOccurrences(of: " ", with: "%20"))";
         let url = URL(string: weatherURL);
@@ -66,6 +67,7 @@ extension ViewController: CLLocationManagerDelegate {
                     locationName = location["name"] as? String;
                     locationTime = location["localtime"] as? String;
                     locationTemperature = current["temperature"] as? Double;
+                    let weatherDescription:[String] = current["weather_descriptions"] as! [String];
                     let localTime = locationTime!.components(separatedBy: " ");
                     let dayOfWeek = self.getDayOfWeek(localTime[0]);
                     
@@ -73,8 +75,9 @@ extension ViewController: CLLocationManagerDelegate {
                     
                     DispatchQueue.main.async {
                         self.cityLabel.text = "\(locationName!)";
-                        self.temperatureLabel.text = "Temperature: \(locationTemperature!)"
+                        self.temperatureLabel.text = "\(locationTemperature!)°"
                         self.timeLabel.text="\(dayOfWeek!), \(localTime[1])"
+                        self.weatherDesc.text="\(weatherDescription[0])"
                     }
                 }
 
